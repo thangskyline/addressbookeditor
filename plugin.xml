@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+
+   <extension
+         point="org.eclipse.ui.editors">
+      <editor
+            name="ABEditor"
+            extensions="ab"
+            icon="icons/texteditor.png"
+            contributorClass="vn.hanelsoft.tomatosys.abedtplugin.ui.editors.ABEditorContributor"
+            class="vn.hanelsoft.tomatosys.abedtplugin.ui.editors.ABEditor"
+            id="vn.hanelsoft.tomatosys.abedtplugin.ui.editors.ABEditor">
+      </editor>
+   </extension>
+   <extension
+         point="org.eclipse.ui.newWizards">
+      <category
+            name="AB Wizards"
+            id="ABEditor">
+      </category>
+      <wizard
+            name="ABEditor file"
+            icon="icons/texteditor.png"
+            category="ABEditor"
+            class="vn.hanelsoft.tomatosys.abedtplugin.ui.wizards.ABNewWizard"
+            id="vn.hanelsoft.tomatosys.abedtplugin.ui.wizards.ABNewWizard">
+      </wizard>
+   </extension>
+
+</plugin>
