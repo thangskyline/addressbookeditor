@@ -190,31 +190,6 @@ public class TreeViewComposite extends Composite implements TreeListener,
 		TreeItem ti = (TreeItem) e.item;
 	}
 
-	private void handlerTreeNodeClick(String type) {
-		clearResult();
-		if (type.equals("TreeItem1")) {
-			txtName.setText("Name 1");
-			txtEmail.setText("Email 1");
-		}
-		if (type.equals("TreeItem2")) {
-			txtName.setText("Name 2");
-			txtEmail.setText("Email 2");
-		}
-		if (type.equals("TreeItem3")) {
-			txtName.setText("Name 2A");
-			txtEmail.setText("Email 2A");
-		}
-		if (type.equals("TreeItem4")) {
-			txtName.setText("Name 2B");
-			txtEmail.setText("Email 2B");
-		}
-		if (type.equals("TreeItem5")) {
-			txtName.setText("Name 3");
-			txtEmail.setText("Email 3");
-		}
-
-	}
-
 	private void clearResult() {
 		txtName.setText("");
 		txtEmail.setText("");
