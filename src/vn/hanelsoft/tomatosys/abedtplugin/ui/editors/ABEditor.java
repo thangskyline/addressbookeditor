@@ -12,6 +12,8 @@ import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.part.MultiPageEditorPart;
 import org.eclipse.ui.ide.IDE;
 
+import vn.hanelsoft.tomatosys.abedtplugin.data.AddressBookDAC;
+
 /**
  * An example showing how to create a multi-page editor.
  * This example has 3 pages:
@@ -39,8 +41,10 @@ public class ABEditor extends MultiPageEditorPart implements IResourceChangeList
 	 * which contains a text editor.
 	 */
 	void createPage0() {
+		AddressBookDAC.TestPersist1("C:\\testPersist.ab");
+		AddressBookDAC.globalRootGroup = AddressBookDAC.LoadRootGroup("C:\\testPersist.ab");
 		
-		TreeViewComposite compositeObj = new TreeViewComposite(getContainer());
+		TreeViewComposite compositeObj = new TreeViewComposite(getContainer(), AddressBookDAC.globalRootGroup);
 		int index = addPage(compositeObj);
 		if(file.isEmpty())
 			setPageText(index, "Address Book Editor");

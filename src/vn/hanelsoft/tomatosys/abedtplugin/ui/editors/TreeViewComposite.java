@@ -18,12 +18,48 @@ import org.eclipse.swt.widgets.TreeItem;
 public class TreeViewComposite extends Composite implements TreeListener,
 		SelectionListener {
 
+	model.Group rootGroup;
 	Text txtName, txtEmail;
+	Tree t;
 
 	public TreeViewComposite(Composite parent) {
 		super(parent, SWT.NONE);
 		// TODO Auto-generated constructor stub
 		createUI();
+	}
+	
+	public TreeViewComposite(Composite parent, model.Group rootGroup) {
+		super(parent, SWT.NONE);
+		// TODO Auto-generated constructor stub
+		this.rootGroup = rootGroup;
+		createUI();
+		treeBinding();
+	}
+	
+	public void treeBinding(){
+		if(rootGroup!=null){
+			TreeItem rootItem = new TreeItem(t, SWT.NONE);
+			buildLeaf(rootItem, rootGroup, true);
+		}
+	}
+	
+	private void buildLeaf(TreeItem rootLeaf, model.Entry entryItem, boolean isRoot){
+		TreeItem item = null;
+		if(isRoot){
+			item = new TreeItem(t, SWT.NONE);
+		}else{
+			item = new TreeItem(rootLeaf, SWT.NONE);
+		}
+		
+		item.setData("DATA", entryItem);
+		item.setText(entryItem.getName());
+		
+		if (entryItem instanceof model.Group){
+			for (model.Entry childItem : ((model.Group)entryItem).getEntries()) {
+				buildLeaf(item, childItem, false);
+			}
+		}
+		
 	}
 
 	public void createUI() {
@@ -45,22 +81,7 @@ public class TreeViewComposite extends Composite implements TreeListener,
 
 		// add treeview to group 1
 		int style = SWT.MULTI | SWT.NONE;
-		final Tree t = new Tree(grp1, style);
-//		t.setLocation(40, 40);
-		
-		for (int i = 0; i < 5; i++) {
-			TreeItem treeItem = new TreeItem(t, SWT.NONE);
-			treeItem.setText("TreeItem" + i);
-			for (int j = 0; j < 5; j++) {
-				TreeItem subTreeItem = new TreeItem(treeItem, SWT.NONE);
-				subTreeItem.setText("SubTreeItem" + j);
-				for (int k = 0; k < 5; k++) {
-					TreeItem subSubTreeItem = new TreeItem(subTreeItem,
-							SWT.NONE);
-					subSubTreeItem.setText("SubSubTreeItem" + k);
-				}
-			}
-		}
+		t = new Tree(grp1, style);
 
 		// add listener for tree
 		t.addTreeListener(this);
