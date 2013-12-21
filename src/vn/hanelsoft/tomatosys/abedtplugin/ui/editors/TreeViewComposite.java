@@ -1,6 +1,7 @@
 package vn.hanelsoft.tomatosys.abedtplugin.ui.editors;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.events.TreeEvent;
@@ -11,6 +12,8 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
@@ -27,39 +30,58 @@ public class TreeViewComposite extends Composite implements TreeListener,
 		// TODO Auto-generated constructor stub
 		createUI();
 	}
-	
+
 	public TreeViewComposite(Composite parent, model.Group rootGroup) {
 		super(parent, SWT.NONE);
 		// TODO Auto-generated constructor stub
 		this.rootGroup = rootGroup;
 		createUI();
 		treeBinding();
+		// thangma
+		treeSetContextMenu();
 	}
-	
-	public void treeBinding(){
-		if(rootGroup!=null){
+
+	public void treeSetContextMenu() {
+
+		Menu menu = new Menu(t);
+		MenuItem menuItem = new MenuItem(menu, SWT.NONE);
+		menuItem.setText("Print Element");
+		menuItem.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent event) {
+				System.out.println("hello context menu");// tree.getSelection()[0].getText()
+				// String valueSelected = t.getSelection()[0].getText();
+				// labelPage1.setText(valueSelected);
+			}
+		});
+		t.setMenu(menu);
+	}
+
+	public void treeBinding() {
+		if (rootGroup != null) {
 			TreeItem rootItem = new TreeItem(t, SWT.NONE);
 			buildLeaf(rootItem, rootGroup, true);
 		}
 	}
-	
-	private void buildLeaf(TreeItem rootLeaf, model.Entry entryItem, boolean isRoot){
+
+	private void buildLeaf(TreeItem rootLeaf, model.Entry entryItem,
+			boolean isRoot) {
 		TreeItem item = null;
-		if(isRoot){
+		if (isRoot) {
 			item = new TreeItem(t, SWT.NONE);
-		}else{
+		} else {
 			item = new TreeItem(rootLeaf, SWT.NONE);
 		}
-		
+
 		item.setData("DATA", entryItem);
 		item.setText(entryItem.getName());
-		
-		if (entryItem instanceof model.Group){
-			for (model.Entry childItem : ((model.Group)entryItem).getEntries()) {
+
+		if (entryItem instanceof model.Group) {
+			for (model.Entry childItem : ((model.Group) entryItem).getEntries()) {
 				buildLeaf(item, childItem, false);
 			}
 		}
-		
+
 	}
 
 	public void createUI() {
@@ -139,12 +161,12 @@ public class TreeViewComposite extends Composite implements TreeListener,
 	public void widgetSelected(SelectionEvent e) {
 		// TODO Auto-generated method stub
 		TreeItem ti = (TreeItem) e.item;
-//		handlerTreeNodeClick(ti.getText());
+		// handlerTreeNodeClick(ti.getText());
 		Object dataNote = ti.getData("DATA");
-		if (dataNote instanceof model.Group){
+		if (dataNote instanceof model.Group) {
 			txtName.setText(((model.Group) dataNote).getName());
 			txtEmail.setText("This is a group");
-		}else{
+		} else {
 			txtName.setText(((model.Person) dataNote).getName());
 			txtEmail.setText(((model.Person) dataNote).getEmail());
 		}

@@ -120,6 +120,7 @@ public class ABEditor extends MultiPageEditorPart implements IResourceChangeList
 			}
 		file = iFile.getRawLocation().toOSString();
 		System.out.println("path: " + file);
+		setPartName(iFile.getName());
 		super.init(site, editorInput);
 	}
 
