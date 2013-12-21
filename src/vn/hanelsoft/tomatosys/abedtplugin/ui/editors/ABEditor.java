@@ -44,8 +44,7 @@ public class ABEditor extends MultiPageEditorPart implements IResourceChangeList
 	 * which contains a text editor.
 	 */
 	void createPage0() {
-		AddressBookDAC.TestPersist1("C:\\testPersist.ab");
-		AddressBookDAC.globalRootGroup = AddressBookDAC.LoadRootGroup("C:\\testPersist.ab");
+		AddressBookDAC.globalRootGroup = AddressBookDAC.LoadRootGroup(file);
 		
 		TreeViewComposite compositeObj = new TreeViewComposite(getContainer(), AddressBookDAC.globalRootGroup);
 		int index = addPage(compositeObj);

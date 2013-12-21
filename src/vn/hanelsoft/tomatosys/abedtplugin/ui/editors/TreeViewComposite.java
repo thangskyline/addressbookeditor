@@ -139,7 +139,15 @@ public class TreeViewComposite extends Composite implements TreeListener,
 	public void widgetSelected(SelectionEvent e) {
 		// TODO Auto-generated method stub
 		TreeItem ti = (TreeItem) e.item;
-		handlerTreeNodeClick(ti.getText());
+//		handlerTreeNodeClick(ti.getText());
+		Object dataNote = ti.getData("DATA");
+		if (dataNote instanceof model.Group){
+			txtName.setText(((model.Group) dataNote).getName());
+			txtEmail.setText("This is a group");
+		}else{
+			txtName.setText(((model.Person) dataNote).getName());
+			txtEmail.setText(((model.Person) dataNote).getEmail());
+		}
 	}
 
 	@Override
