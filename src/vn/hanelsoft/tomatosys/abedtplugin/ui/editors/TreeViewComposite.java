@@ -1,7 +1,5 @@
 package vn.hanelsoft.tomatosys.abedtplugin.ui.editors;
 
-import javax.swing.ImageIcon;
-
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -12,8 +10,10 @@ import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Text;
@@ -24,8 +24,8 @@ public class TreeViewComposite extends Composite implements TreeListener,
 		SelectionListener {
 
 	model.Group rootGroup;
-	private static model.Entry lastEntrySelected;
-	
+	model.Entry lastSelectedData;
+
 	Text txtName, txtEmail;
 	Tree tree;
 
@@ -54,8 +54,6 @@ public class TreeViewComposite extends Composite implements TreeListener,
 			@Override
 			public void widgetSelected(SelectionEvent event) {
 				System.out.println("hello context menu");// tree.getSelection()[0].getText()
-				// String valueSelected = t.getSelection()[0].getText();
-				// labelPage1.setText(valueSelected);
 			}
 		});
 		tree.setMenu(menu);
@@ -63,14 +61,15 @@ public class TreeViewComposite extends Composite implements TreeListener,
 
 	public void renderTree() {
 		if (rootGroup != null) {
-			TreeItem rootItem = new TreeItem(tree, SWT.NONE);
-			treeBinding(rootItem, rootGroup, true);
+			if(tree.getItemCount()>0)
+				tree.removeAll();
+			
+			treeBinding(null, rootGroup, true);
 		}
+		
 	}
 
-	// private void renderTree(TreeItem rootLeaf, model.Entry entryItem, boolean
-	// isRoot){
-
+	
 	private void treeBinding(TreeItem rootLeaf, model.Entry entryItem,
 			boolean isRoot) {
 		TreeItem item = null;
@@ -79,16 +78,46 @@ public class TreeViewComposite extends Composite implements TreeListener,
 		} else {
 			item = new TreeItem(rootLeaf, SWT.NONE);
 		}
-		
+
 		item.setData("DATA", entryItem);
 		item.setText(entryItem.getName());
-
+		
+		
 		if (entryItem instanceof model.Group) {
 			for (model.Entry childItem : ((model.Group) entryItem).getEntries()) {
 				treeBinding(item, childItem, false);
 			}
 		}
 
+	}
+	
+	private void restoreTreeState(TreeItem[] listTreeNodeItem){
+		if(lastSelectedData!=null){
+			for (TreeItem treeItem : listTreeNodeItem) {
+				model.Entry dataNode = (model.Entry)treeItem.getData("DATA");
+				if(dataNode instanceof model.Group){
+					if(dataNode.getID().equals(lastSelectedData.getID())){
+						TreeItem parentTemp = treeItem.getParentItem();
+						tree.setSelection(parentTemp);
+						while(parentTemp!=null){
+							parentTemp.setExpanded(true);
+							parentTemp=parentTemp.getParentItem();
+						}
+					}else
+						restoreTreeState(treeItem.getItems());
+				}else{
+					if(dataNode.getID().equals(lastSelectedData.getID())){
+						tree.setSelection(treeItem);
+						TreeItem parentTemp = treeItem.getParentItem();
+						while(parentTemp!=null){
+							parentTemp.setExpanded(true);
+							tree.setSelection(parentTemp);
+							parentTemp=parentTemp.getParentItem();
+						}
+					}
+				}
+			}
+		}
 	}
 
 	public void createUI() {
@@ -144,6 +173,16 @@ public class TreeViewComposite extends Composite implements TreeListener,
 
 		txtName = new Text(grp2, SWT.BORDER);
 		txtName.setLayoutData(gd4);
+		// Set listener for txtName
+		txtName.addListener(SWT.FocusOut, new Listener() {
+
+			@Override
+			public void handleEvent(Event e) {
+				// TODO Auto-generated method stub
+				updateModel(e);
+			}
+		});
+		// end
 		txtName.pack();
 
 		Label lblEmail = new Label(grp2, SWT.NONE);
@@ -153,9 +192,49 @@ public class TreeViewComposite extends Composite implements TreeListener,
 
 		txtEmail = new Text(grp2, SWT.BORDER);
 		txtEmail.setLayoutData(gd4);
+		// Set listener for txtName
+		txtEmail.addListener(SWT.FocusOut, new Listener() {
+
+			@Override
+			public void handleEvent(Event e) {
+				// TODO Auto-generated method stub
+				updateModel(e);
+			}
+		});
+		// end
 		txtEmail.pack();
 
 		grp2.pack();
+	}
+	
+	private void updateEntryByTreeNode(model.Entry entry, model.Entry dataNote){
+		if(entry!=null){
+			if(entry.getID().equals(dataNote.getID()))
+			{
+				entry = dataNote;
+			}else{
+				if (entry instanceof model.Group) {
+					for (model.Entry childItem : ((model.Group) entry).getEntries()) {
+						updateEntryByTreeNode(childItem, dataNote);
+					}
+				}
+			}
+			
+		}
+	}
+
+	private void updateModel(Event e) {
+		if(lastSelectedData==null)
+			return;		
+		if (lastSelectedData instanceof model.Group) {
+			((model.Group) lastSelectedData).setName(txtName.getText());
+		} else {
+			((model.Person) lastSelectedData).setName(txtName.getText());
+			((model.Person) lastSelectedData).setEmail(txtEmail.getText());
+		}
+		updateEntryByTreeNode(rootGroup, lastSelectedData);
+		renderTree();
+		restoreTreeState(tree.getItems());
 	}
 
 	@Override
@@ -163,17 +242,14 @@ public class TreeViewComposite extends Composite implements TreeListener,
 		// TODO Auto-generated method stub
 
 	}
-	
+
 	@Override
 	public void widgetSelected(SelectionEvent e) {
-		//Save lastEntryselected before process new selected
-		if(lastEntrySelected!=null){
-			
-		}
 		// TODO Auto-generated method stub
 		TreeItem ti = (TreeItem) e.item;
 		// handlerTreeNodeClick(ti.getText());
-		Object dataNote = ti.getData("DATA");
+		model.Entry dataNote = (model.Entry)ti.getData("DATA");
+		this.lastSelectedData = dataNote;
 		if (dataNote instanceof model.Group) {
 			txtName.setText(((model.Group) dataNote).getName());
 			txtEmail.setText("This is a group");
@@ -195,8 +271,4 @@ public class TreeViewComposite extends Composite implements TreeListener,
 		TreeItem ti = (TreeItem) e.item;
 	}
 
-	private void clearResult() {
-		txtName.setText("");
-		txtEmail.setText("");
-	}
 }
