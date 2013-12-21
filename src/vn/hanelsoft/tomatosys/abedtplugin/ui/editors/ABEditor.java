@@ -1,5 +1,8 @@
 package vn.hanelsoft.tomatosys.abedtplugin.ui.editors;
 
+import java.io.FileNotFoundException;
+
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.IResourceChangeListener;
@@ -106,7 +109,18 @@ public class ABEditor extends MultiPageEditorPart implements IResourceChangeList
 		if (!(editorInput instanceof IFileEditorInput))
 			throw new PartInitException(
 					"Invalid Input: Must be IFileEditorInput");
-		file = ((FileEditorInput)editorInput).getFile().toString();
+//		file = ((FileEditorInput)editorInput).getFile().toString();
+		IFile iFile = ((FileEditorInput)editorInput).getFile();
+		if (iFile == null)
+			try {
+				throw new FileNotFoundException();
+				
+			} catch (FileNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		file = iFile.getRawLocation().toOSString();
+		System.out.println("path: " + file);
 		super.init(site, editorInput);
 	}
 
