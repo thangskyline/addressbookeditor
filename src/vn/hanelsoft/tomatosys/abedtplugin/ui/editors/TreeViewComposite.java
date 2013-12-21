@@ -49,24 +49,10 @@ public class TreeViewComposite extends Composite implements TreeListener,
 		Menu menu = new Menu(tree);
 		MenuItem copyMenuItem = new MenuItem(menu, SWT.NONE);
 		copyMenuItem.setText("Copy\tCtrl + C");
-		copyMenuItem.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent event) {
-				System.out.println("hello context menu");// tree.getSelection()[0].getText()
-				// String valueSelected = t.getSelection()[0].getText();
-				// labelPage1.setText(valueSelected);
-			}
-		});
+		copyMenuItem.addSelectionListener( new ComponentListener());
 		MenuItem pasteMenuItem = new MenuItem(menu, SWT.NONE);
 		pasteMenuItem.setText("Paste\tCtrl + V");
-		pasteMenuItem.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent event) {
-				System.out.println("hello context menu");// tree.getSelection()[0].getText()
-				// String valueSelected = t.getSelection()[0].getText();
-				// labelPage1.setText(valueSelected);
-			}
-		});
+		pasteMenuItem.addSelectionListener(new ComponentListener());
 		tree.setMenu(menu);
 	}
 
