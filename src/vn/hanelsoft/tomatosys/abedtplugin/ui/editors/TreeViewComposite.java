@@ -1,10 +1,13 @@
 package vn.hanelsoft.tomatosys.abedtplugin.ui.editors;
 
+import javax.swing.ImageIcon;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.events.TreeEvent;
 import org.eclipse.swt.events.TreeListener;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -20,7 +23,7 @@ public class TreeViewComposite extends Composite implements TreeListener,
 
 	model.Group rootGroup;
 	Text txtName, txtEmail;
-	Tree t;
+	Tree tree;
 
 	public TreeViewComposite(Composite parent) {
 		super(parent, SWT.NONE);
@@ -38,15 +41,15 @@ public class TreeViewComposite extends Composite implements TreeListener,
 	
 	public void treeBinding(){
 		if(rootGroup!=null){
-			TreeItem rootItem = new TreeItem(t, SWT.NONE);
-			buildLeaf(rootItem, rootGroup, true);
+			TreeItem rootItem = new TreeItem(tree, SWT.NONE);
+			renderTree(rootItem, rootGroup, true);
 		}
 	}
 	
-	private void buildLeaf(TreeItem rootLeaf, model.Entry entryItem, boolean isRoot){
+	private void renderTree(TreeItem rootLeaf, model.Entry entryItem, boolean isRoot){
 		TreeItem item = null;
 		if(isRoot){
-			item = new TreeItem(t, SWT.NONE);
+			item = new TreeItem(tree, SWT.NONE);
 		}else{
 			item = new TreeItem(rootLeaf, SWT.NONE);
 		}
@@ -56,7 +59,7 @@ public class TreeViewComposite extends Composite implements TreeListener,
 		
 		if (entryItem instanceof model.Group){
 			for (model.Entry childItem : ((model.Group)entryItem).getEntries()) {
-				buildLeaf(item, childItem, false);
+				renderTree(item, childItem, false);
 			}
 		}
 		
@@ -81,18 +84,18 @@ public class TreeViewComposite extends Composite implements TreeListener,
 
 		// add treeview to group 1
 		int style = SWT.MULTI | SWT.NONE;
-		t = new Tree(grp1, style);
+		tree = new Tree(grp1, style);
 
 		// add listener for tree
-		t.addTreeListener(this);
-		t.addSelectionListener(this);
-		t.pack();
+		tree.addTreeListener(this);
+		tree.addSelectionListener(this);
+		tree.pack();
 		grp1.pack();
 
 		// Layout and add group 2 to right parent container
 		Group grp2 = new Group(this, SWT.NONE);
 		GridData gd2 = new GridData(SWT.FILL, SWT.FILL, false, false);
-		gd2.widthHint = 450;
+		gd2.widthHint = 400;
 		// gd2.heightHint = 350;
 		grp2.setLayoutData(gd2);
 
@@ -104,9 +107,9 @@ public class TreeViewComposite extends Composite implements TreeListener,
 
 		// layout for each element of group 2
 		GridData gd3 = new GridData(SWT.FILL, SWT.FILL, false, false);
-		gd3.widthHint = 50;
+		gd3.widthHint = 70;
 		GridData gd4 = new GridData(SWT.FILL, SWT.FILL, false, false);
-		gd4.widthHint = 200;
+		gd4.widthHint = 220;
 
 		Label lblName = new Label(grp2, SWT.NONE);
 		lblName.setText("Name");
