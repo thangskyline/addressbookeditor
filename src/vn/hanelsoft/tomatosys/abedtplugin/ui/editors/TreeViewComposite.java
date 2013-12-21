@@ -8,7 +8,6 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.events.TreeEvent;
 import org.eclipse.swt.events.TreeListener;
-import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -25,6 +24,8 @@ public class TreeViewComposite extends Composite implements TreeListener,
 		SelectionListener {
 
 	model.Group rootGroup;
+	private static model.Entry lastEntrySelected;
+	
 	Text txtName, txtEmail;
 	Tree tree;
 
@@ -162,9 +163,13 @@ public class TreeViewComposite extends Composite implements TreeListener,
 		// TODO Auto-generated method stub
 
 	}
-
+	
 	@Override
 	public void widgetSelected(SelectionEvent e) {
+		//Save lastEntryselected before process new selected
+		if(lastEntrySelected!=null){
+			
+		}
 		// TODO Auto-generated method stub
 		TreeItem ti = (TreeItem) e.item;
 		// handlerTreeNodeClick(ti.getText());
