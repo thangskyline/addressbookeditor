@@ -1,0 +1,14 @@
+Cac cong viec can lam:
+* T7:
+- Save File: Save du lieu xuong file .ab
+- Context Menu: nghien cuu menu context (copy, paste)
+- Export :export plugin (nho anh Binh nghien cuu).
+- Tai lieu:  deliver tinh nang save cho anh Binh de anh binh lam Tai lieu.
+
+* CN:
+- Copy & Paste: thuc hien chuc nang copy paste, save duoc vao file .ab
+
+
+* T2:
+- Wizard : implement wizard
+- Test: test lai
